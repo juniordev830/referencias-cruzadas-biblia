@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
-export function useLocalState<T>(key: string, fallback: T): [T, Dispatch<SetStateAction<T>>, string] {
-  const [state, setState] = useState(() => {
+export function useLocalState<T>(key: string, fallback: T, decode: (raw: string) => T): [T, Dispatch<SetStateAction<T>>, string] {
+  const [initial] = useState(() => {
     try {
       const raw = localStorage.getItem(key);
-      return raw === null ? fallback : JSON.parse(raw) as T;
+      return { value: raw === null ? fallback : decode(raw), error: '' };
     } catch {
-      return fallback;
+      return {
+        value: fallback,
+        error: 'Não foi possível abrir os dados locais. Os registros originais serão preservados e as alterações ficarão nesta sessão.',
+      };
     }
   });
-  const [error, setError] = useState('');
+  const [state, setState] = useState(initial.value);
+  const [error, setError] = useState(initial.error);
   useEffect(() => {
+    if (initial.error) return;
     try {
       localStorage.setItem(key, JSON.stringify(state));
       setError('');
     } catch {
       setError('O navegador impediu o armazenamento. As alterações podem se perder ao fechar a página.');
     }
-  }, [key, state]);
+  }, [key, state, initial]);
   return [state, setState, error];
 }

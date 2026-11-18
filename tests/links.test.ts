@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { books } from '../src/canon.ts';
-import { connections, exportLinks, label, related, sourceLink, validate } from '../src/links.ts';
+import { connections, exportLinks, label, parseSavedPassages, related, sourceLink, validate } from '../src/links.ts';
 import { verseCounts } from '../src/verse-counts.ts';
+
+test('carrega referências válidas e rejeita listas com registros inválidos', () => {
+  const entry = connections[0].from;
+  assert.deepEqual(parseSavedPassages(JSON.stringify([entry])), [entry]);
+  assert.throws(() => parseSavedPassages('null'), /Formato inválido/);
+  assert.throws(() => parseSavedPassages(JSON.stringify([entry, { ...entry, chapter: 500 }])), /Formato inválido/);
+});
 
 test('numeração cobre os 66 livros e confirma cada contagem de capítulos', () => {
   assert.equal(Object.keys(verseCounts).length, 66);

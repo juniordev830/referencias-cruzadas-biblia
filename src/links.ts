@@ -57,6 +57,20 @@ export function validate(passage: Passage) {
   return '';
 }
 
+function isSavedPassage(value: unknown): value is Passage {
+  if (!value || typeof value !== 'object') return false;
+  const passage = value as Passage;
+  return typeof passage.book === 'string' && titles.has(passage.book) && validate(passage) === '';
+}
+
+export function parseSavedPassages(raw: string): Passage[] {
+  const items: unknown = JSON.parse(raw);
+  if (!Array.isArray(items) || !items.every(isSavedPassage)) {
+    throw new Error('Formato inválido das referências salvas.');
+  }
+  return items;
+}
+
 export function label(passage: Passage) {
   return titles.get(passage.book) + ' ' + passage.chapter + ':' + passage.start +
     (passage.start < passage.end ? '–' + passage.end : '');

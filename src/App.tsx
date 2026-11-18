@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { books } from './canon.ts';
 import { download } from './download.ts';
-import { connections, exportLinks, key, label, related, sourceLink, themes, validate } from './links.ts';
+import { connections, exportLinks, key, label, parseSavedPassages, related, sourceLink, themes, validate } from './links.ts';
 import type { Passage } from './links.ts';
 import { useLocalState } from './storage.ts';
 import { verseCounts } from './verse-counts.ts';
@@ -10,8 +10,8 @@ export default function App() {
   const [draft, setDraft] = useState({ book: 'MT', chapter: '4', verse: '4' });
   const [current, setCurrent] = useState<Passage>(connections[0].from);
   const [theme, setTheme] = useState('');
-  const [favorites, setFavorites, favoriteError] = useLocalState<Passage[]>('referencias-favoritos-v1', []);
-  const [history, setHistory, historyError] = useLocalState<Passage[]>('referencias-historico-v1', []);
+  const [favorites, setFavorites, favoriteError] = useLocalState<Passage[]>('referencias-favoritos-v1', [], parseSavedPassages);
+  const [history, setHistory, historyError] = useLocalState<Passage[]>('referencias-historico-v1', [], parseSavedPassages);
   const [issue, setIssue] = useState('');
   const rows = related(current, theme);
   const nodes = [...new Map(rows.map(({ other }) => [key(other), other])).values()];
