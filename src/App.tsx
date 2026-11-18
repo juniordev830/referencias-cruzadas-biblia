@@ -51,7 +51,7 @@ export default function App() {
           <option value="">Todos os temas</option>{themes.map(item => <option key={item}>{item}</option>)}
         </select></label>
       </section>
-      <section className="panel stack">
+      <section className="panel stack" id="passagem" tabIndex={-1}>
         <div className="row between"><h2>{label(current)}</h2>
           <button aria-pressed={favorite} onClick={() => setFavorites(previous => favorite
             ? previous.filter(item => key(item) !== key(current)) : [...previous, current])}>Favorito</button>
@@ -73,14 +73,14 @@ export default function App() {
       </section>
     </div>
     <aside className="stack">
-      <section className="panel stack">
+      <section className="panel stack" id="conexoes" tabIndex={-1}>
         <h2>Conexões selecionadas</h2>
         <p className="muted">{connections.length} citações e retomadas textuais na seleção inicial.</p>
         <ul className="list">{[connections[0], connections[8], connections[24], connections[27]].map(item => <li key={item.id}>
           <button className="selection" onClick={() => { setTheme(''); open(item.from); }}>{label(item.from)} · {item.theme}</button>
         </li>)}</ul>
       </section>
-      <section className="panel stack">
+      <section className="panel stack" id="favoritos" tabIndex={-1}>
         <h2>Favoritos</h2>
         {!favorites.length && <p className="muted">Salve uma passagem para voltar a ela.</p>}
         <ul className="list">{favorites.map(item => <li key={key(item)}><button className="selection" onClick={() => open(item)}>{label(item)}</button></li>)}</ul>
