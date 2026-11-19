@@ -7,7 +7,7 @@ import { useLocalState } from './storage.ts';
 import { verseCounts } from './verse-counts.ts';
 
 export default function App() {
-  const [draft, setDraft] = useState({ book: 'MT', chapter: '4', verse: '4' });
+  const [draft, setDraft] = useState({ book: 'MT', chapter: '4', verse: '4', end: '' });
   const [current, setCurrent] = useState<Passage>(connections[0].from);
   const [theme, setTheme] = useState('');
   const [favorites, setFavorites, favoriteError] = useLocalState<Passage[]>('referencias-favoritos-v1', [], parseSavedPassages);
@@ -23,7 +23,10 @@ export default function App() {
   function open(passage: Passage) {
     setIssue('');
     setCurrent(passage);
-    setDraft({ book: passage.book, chapter: String(passage.chapter), verse: String(passage.start) });
+    setDraft({
+      book: passage.book, chapter: String(passage.chapter), verse: String(passage.start),
+      end: passage.end === passage.start ? '' : String(passage.end),
+    });
     setHistory(previous => [passage, ...previous.filter(item => key(item) !== key(passage))].slice(0, 12));
   }
 
@@ -32,17 +35,18 @@ export default function App() {
       <section className="panel stack">
         <form className="form" onSubmit={event => {
           event.preventDefault();
-          const passage = { book: draft.book, chapter: Number(draft.chapter), start: Number(draft.verse), end: Number(draft.verse) };
+          const passage = { book: draft.book, chapter: Number(draft.chapter), start: Number(draft.verse), end: Number(draft.end || draft.verse) };
           const error = validate(passage);
           if (error) setIssue(error);
           else open(passage);
         }}>
           <div className="three collapse">
-            <label>Livro<select value={draft.book} onChange={e => setDraft({ book: e.target.value, chapter: '1', verse: '1' })}>
+            <label>Livro<select value={draft.book} onChange={e => setDraft({ book: e.target.value, chapter: '1', verse: '1', end: '' })}>
               {books.map(item => <option key={item.code} value={item.code}>{item.name}</option>)}
             </select></label>
-            <label>Capítulo<input type="number" min={1} max={book.chapters} required value={draft.chapter} onChange={e => setDraft({ ...draft, chapter: e.target.value, verse: '1' })} /></label>
-            <label>Versículo<input type="number" min={1} max={maxVerse} required value={draft.verse} onChange={e => setDraft({ ...draft, verse: e.target.value })} /></label>
+            <label>Capítulo<input type="number" min={1} max={book.chapters} required value={draft.chapter} onChange={e => setDraft({ ...draft, chapter: e.target.value, verse: '1', end: '' })} /></label>
+            <label>Versículo inicial<input type="number" min={1} max={maxVerse} required value={draft.verse} onChange={e => setDraft({ ...draft, verse: e.target.value })} /></label>
+            <label>Versículo final (opcional)<input type="number" min={Number(draft.verse) || 1} max={maxVerse} value={draft.end} onChange={e => setDraft({ ...draft, end: e.target.value })} /></label>
           </div>
           <button className="primary">Buscar passagem</button>
           {issue && <p role="alert" className="error">{issue}</p>}
