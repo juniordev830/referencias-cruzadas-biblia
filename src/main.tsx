@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
       </div>
       <span className="collection">Coleção de estudo bíblico</span>
     </header>
-    <main id="conteudo">
+    <main id="conteudo" tabIndex={-1}>
       <div className="intro">
         <h1>Referências cruzadas</h1>
         <nav className="atalhos" aria-label="Seções desta página">
