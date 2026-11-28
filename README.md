@@ -1,5 +1,7 @@
 # Referências cruzadas bíblicas
 
+**Navegação** · [Como executar](#como-executar) · [Exemplo de uso](#exemplo-de-uso) · [Limitações](#limitações) · [Código e estudo](docs/ENGENHARIA_REVERSA.md)
+
 Busca por livro, capítulo e versículo, grafo navegável, temas, favoritos, histórico e exportação.
 
 ## Como executar
@@ -31,3 +33,9 @@ A seleção inicial contém 29 ligações. Ausência de resultado não significa
 A interface usa React e TypeScript, com Vite para desenvolvimento e build. A lógica do domínio fica em módulos de `src/`, separados da interface, e os testes em `tests/`. Os dados pessoais dos recursos que exigem persistência usam armazenamento local do navegador. A concordância possui API FastAPI e índice local em `backend/`.
 
 As fontes e licenças estão em [docs/FONTES.md](docs/FONTES.md). A licença do código está em [LICENSE](LICENSE). O fluxo em `.github/workflows/ci.yml` executa testes e build em pushes e pull requests.
+
+## Código e roteiro de estudo
+
+Como evitar que uma referência para um capítulo ou versículo inexistente seja adicionada ao grafo? O [guia de engenharia reversa](docs/ENGENHARIA_REVERSA.md) reúne o mapa dos módulos e uma pergunta técnica baseada no projeto.
+
+Mantido por [João Junior](https://github.com/juniordev830).
